@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Programmer{% endblock %}
+
+{% block content %}
+    <h1 id="create">Create new Programmer</h1>
+
+    {{ include('programmer/_form.html.twig') }}
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        jQuery(document).ready(function() {
+            $('.js-selectable-tile').on('click', 'li', function(e) {
+                e.preventDefault();
+                $(this).parent().find('li').removeClass('selected');
+                $(this).addClass('selected');
+                /*$('.js-selectable-target').val($(this).data('number'))*/
+                var self = this;
+                $('.js-selectable-target option').each(function(){
+                    if($(this).textContent == $(self).data('number')){
+                        $(this).prop("selected", true);
+                    }
+                });
+                console.log($('.js-selectable-target').val());
+            });
+        });
+    </script>
+{% endblock %}

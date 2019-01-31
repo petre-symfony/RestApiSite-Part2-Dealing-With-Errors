@@ -1,0 +1,35 @@
+{{ form_start(form) }}
+<fieldset>
+    <div class="form-group">
+        {{ form_label(form.nickname, 'Nickname', {
+            'label_attr': {'class': 'control-label'}
+        }) }}
+        {{ form_widget(form.nickname, {
+            'attr': {'class': 'form-control'}
+        }) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.tagLine, 'Tag Line', {
+            'label_attr': {'class': 'control-label'}
+        }) }}
+        {{ form_widget(form.tagLine, {
+            'attr': {'class': 'form-control'}
+        }) }}
+    </div>
+
+    <ul class="avatar-list js-selectable-tile">
+        {% for i in 1..6 %}
+            <li data-number="{{ i }}">
+                <img src="{{ asset('img/avatar' ~ i ~ '.png') }}" alt="Avatar{{ i }}">
+            </li>
+        {% endfor %}
+    </ul>
+
+    {{ form_widget(form.avatarNumber, {
+        'attr': {'class': 'js-selectable-target', 'hidden': 'hidden'}
+    }) }}
+
+    <button type="submit" class="btn create-buttons">Compile!</button>
+    <a class="cancel-link" href="{{ path('homepage') }}">Cancel</a>
+</fieldset>
+{{ form_end(form) }}
