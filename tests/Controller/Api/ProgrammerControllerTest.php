@@ -144,7 +144,8 @@ EOF;
 		$response = $this->client->post('/api/programmers', [
 				'body' => $invalidJson
 		]);
-		$this->debugResponse($response);
+		
+		
 		$this->assertEquals(400,  $response->getStatusCode());
 		$this->asserter()->assertResponsePropertyEquals(
 				$response,
