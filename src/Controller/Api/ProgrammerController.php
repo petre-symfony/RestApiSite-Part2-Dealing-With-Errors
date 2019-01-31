@@ -32,6 +32,11 @@ class ProgrammerController extends APIBaseController {
     $programmer = new Programmer();
     $form = $this->createForm(ProgrammerType::class, $programmer);
     $this->processForm($request, $form);
+	
+	  if(!$form->isValid()){
+		  header("Content-Type: cli");
+		  var_dump((string) $form->getErrors(true, false));die;
+	  }
 
     $programmer->setUser($userRepository->findOneBy(['username' => 'weaverryan']));
     $em = $this->getDoctrine()->getManager();
