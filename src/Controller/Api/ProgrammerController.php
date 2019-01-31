@@ -146,7 +146,10 @@ class ProgrammerController extends APIBaseController {
 	private function createValidationErrorResponse(FormInterface $form){
 		$errors = $this->getErrorsFromForm($form);
 		
-		$apiProblem = new ApiProblem(400, 'validation_error', 'There was a validation error');
+		$apiProblem = new ApiProblem(
+			400,
+			ApiProblem::TYPE_VALIDATION_ERROR
+		);
 		$apiProblem->set('errors', $errors);
 		
 		$response =  new JsonResponse($apiProblem->toArray(), $apiProblem->getStatusCode());

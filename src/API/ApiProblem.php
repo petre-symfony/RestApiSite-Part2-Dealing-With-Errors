@@ -6,6 +6,11 @@ namespace App\API;
  * A wrapper for holding data to be used for a application/problem+json response
  */
 class ApiProblem {
+	const TYPE_VALIDATION_ERROR = 'validation_error';
+	private static $titles = [
+		self::TYPE_VALIDATION_ERROR => 'There was a validation error'
+	];
+	
 	private $statusCode;
 
 	private $type;
@@ -14,10 +19,14 @@ class ApiProblem {
 
 	private $extraData = array();
 
-	public function __construct($statusCode, $type, $title){
+	public function __construct($statusCode, $type){
 		$this->statusCode = $statusCode;
 		$this->type = $type;
-		$this->title = $title;
+		
+		if(!isset(self::$titles[$type])){
+			throw new \InvalidArgumentException('No title for type ' . $type);
+		}
+		$this->title = self::$titles[$type];
 	}
 
 	public function toArray(){
