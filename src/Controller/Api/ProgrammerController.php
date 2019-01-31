@@ -15,6 +15,7 @@ use App\Form\ProgrammerType;
 use App\Form\UpdateProgrammerType;
 use App\Repository\ProgrammerRepository;
 use App\Repository\UserRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -34,8 +35,13 @@ class ProgrammerController extends APIBaseController {
     $this->processForm($request, $form);
 	
 	  if(!$form->isValid()){
-		  header("Content-Type: cli");
-		  var_dump((string) $form->getErrors(true, false));die;
+		  $erors = $this->getErrorsFromForm($form);
+		  $data = [
+			  'type' => 'validation_error',
+			  'title' => 'There was a validation error',
+			  'errors' => $erors
+		  ];
+		  return new JsonResponse($data, 400);
 	  }
 
     $programmer->setUser($userRepository->findOneBy(['username' => 'weaverryan']));
@@ -122,4 +128,18 @@ class ProgrammerController extends APIBaseController {
 		$form->submit($data, $clearMissing);
 	}
 	
+	private function getErrorsFromForm(FormInterface $form){
+		$errors = array();
+		foreach ($form->getErrors() as $error) {
+			$errors[] = $error->getMessage();
+		}
+		foreach ($form->all() as $childForm) {
+			if ($childForm instanceof FormInterface) {
+				if ($childErrors = $this->getErrorsFromForm($childForm)) {
+					$errors[$childForm->getName()] = $childErrors;
+				}
+			}
+		}
+		return $errors;
+	}
 }
