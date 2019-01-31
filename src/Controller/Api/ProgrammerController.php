@@ -9,6 +9,7 @@
 namespace App\Controller\Api;
 
 
+use App\API\ApiProblem;
 use App\Controller\APIBaseController;
 use App\Entity\Programmer;
 use App\Form\ProgrammerType;
@@ -143,14 +144,14 @@ class ProgrammerController extends APIBaseController {
 	}
 	
 	private function createValidationErrorResponse(FormInterface $form){
-		$erors = $this->getErrorsFromForm($form);
-		$data = [
-				'type' => 'validation_error',
-				'title' => 'There was a validation error',
-				'errors' => $erors
-		];
-		$response =  new JsonResponse($data, 400);
+		$errors = $this->getErrorsFromForm($form);
+		
+		$apiProblem = new ApiProblem(400, 'validation_error', 'There was a validation error');
+		$apiProblem->set('errors', $errors);
+		
+		$response =  new JsonResponse($apiProblem->toArray(), $apiProblem->getStatusCode());
 		$response->headers->set('Content-Type', 'application/problem+json');
+		
 		return $response;
 	}
 }
