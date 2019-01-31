@@ -6,5 +6,11 @@ controllers:
   resource: '../src/Controller/'
   type: annotation
 
+api:
+  resource: '../src/Controller/Api'
+  type: annotation
+  defaults:
+    _format: json
+    
 logout:
   path: /logout
