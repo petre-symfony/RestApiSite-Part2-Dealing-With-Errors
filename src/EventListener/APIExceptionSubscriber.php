@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 class APIExceptionSubscriber implements EventSubscriberInterface {
 	private $debug;
+	
 	public function __construct($debug){
 		$this->debug = $debug;
 	}
@@ -51,9 +52,14 @@ class APIExceptionSubscriber implements EventSubscriberInterface {
 				$apiProblem->set('detail', $message);
 			}
 		}
-
+		
+		$data = $apiProblem->toArray();
+		if ($data['type'] !== 'about:blank'){
+			$data['type'] = 'http://localhost/docs/errors#'.$data['type'];
+		}
+		
 		$response =  new JsonResponse(
-			$apiProblem->toArray(),
+			$data,
 			$apiProblem->getStatusCode()
 		);
 

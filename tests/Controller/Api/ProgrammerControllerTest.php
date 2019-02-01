@@ -28,7 +28,6 @@ class ProgrammerControllerTest extends ApiTestCase {
     $this->assertEquals('/api/programmers/ObjectOrienter', $response->getHeader('Location')[0]);
     $finishedData = json_decode($response->getBody(), true);
     $this->assertArrayHasKey('nickname', $finishedData);
-		$this->debugResponse($response);
 	}
 	
 	public function testGetProgrammer(){
@@ -148,7 +147,7 @@ EOF;
 		
 		
 		$this->assertEquals(400,  $response->getStatusCode());
-		$this->asserter()->assertResponsePropertyEquals(
+		$this->asserter()->assertResponsePropertyContains(
 			$response,
 			'type',
 			'invalid_body_format'
@@ -159,6 +158,7 @@ EOF;
 			'title',
 			'Invalid JSON format sent'
 		);
+		
 	}
 	
 	public function test404Exception(){
