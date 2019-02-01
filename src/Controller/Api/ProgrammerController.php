@@ -37,7 +37,7 @@ class ProgrammerController extends APIBaseController {
     $this->processForm($request, $form);
 	
 	  if(!$form->isValid()){
-		  return $this->createValidationErrorResponse($form);
+		  $this->throwAPIProblemException($form);
 	  }
 
     $programmer->setUser($userRepository->findOneBy(['username' => 'weaverryan']));
@@ -90,7 +90,7 @@ class ProgrammerController extends APIBaseController {
 		$this->processForm($request, $form);
 		
 		if(!$form->isValid()){
-			return $this->createValidationErrorResponse($form);
+			$this->throwAPIProblemException($form);
 		}
 		
 		$em = $this->getDoctrine()->getManager();
@@ -153,7 +153,7 @@ class ProgrammerController extends APIBaseController {
 		return $errors;
 	}
 	
-	private function createValidationErrorResponse(FormInterface $form){
+	private function throwAPIProblemException(FormInterface $form){
 		$errors = $this->getErrorsFromForm($form);
 		
 		$apiProblem = new ApiProblem(
@@ -165,6 +165,6 @@ class ProgrammerController extends APIBaseController {
 		$response =  new JsonResponse($apiProblem->toArray(), $apiProblem->getStatusCode());
 		$response->headers->set('Content-Type', 'application/problem+json');
 		
-		return $response;
+		throw new ApiProblemException($apiProblem);
 	}
 }

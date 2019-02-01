@@ -142,15 +142,40 @@ class ProgrammerControllerTest extends ApiTestCase {
 EOF;
 		//1) Post to create the programmer
 		$response = $this->client->post('/api/programmers', [
-				'body' => $invalidJson
+			'body' => $invalidJson
 		]);
 		
 		
 		$this->assertEquals(400,  $response->getStatusCode());
 		$this->asserter()->assertResponsePropertyEquals(
-				$response,
-				'type',
-				'invalid_body_format'
+			$response,
+			'type',
+			'invalid_body_format'
+		);
+		
+		$this->asserter()->assertResponsePropertyEquals(
+			$response,
+			'title',
+			'Invalid JSON format sent'
+		);
+	}
+	
+	public function test404Exception(){
+		$response = $this->client->get('/api/programmers/fake');
+		$this->assertEquals(404,  $response->getStatusCode());
+		$this->assertEquals(
+			'application/problem+json',
+			$response->getHeader('Content-Type')[0]
+		);
+		$this->asserter()->assertResponsePropertyEquals(
+			$response,
+			'type',
+			'about:blank'
+		);
+		$this->asserter()->assertResponsePropertyEquals(
+			$response,
+			'title',
+			'Not Found'
 		);
 	}
 }
