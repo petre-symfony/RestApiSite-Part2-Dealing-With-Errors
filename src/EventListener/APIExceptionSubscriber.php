@@ -11,13 +11,26 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class APIExceptionSubscriber implements EventSubscriberInterface {
+	private $debug;
+	public function __construct($debug){
+		$this->debug = $debug;
+	}
+	/**
+	 * @param GetResponseForExceptionEvent $event
+	 */
 	public function onKernelException(GetResponseForExceptionEvent $event){
 		$e = $event->getException();
-
+		
+		$statusCode = $e instanceof  HttpExceptionInterface ? $e->getStatusCode() : 500;
+		
+		if($statusCode == 500 && $this->debug){
+			return;
+		}
+		
 		if($e instanceof ApiProblemException){
 			$apiProblem = $e->getApiProblem();
 		} else {
-			$statusCode = $e instanceof  HttpExceptionInterface ? $e->getStatusCode() : 500;
+			
 			$apiProblem = new ApiProblem($statusCode);
 			
 			if($e instanceof HttpExceptionInterface){

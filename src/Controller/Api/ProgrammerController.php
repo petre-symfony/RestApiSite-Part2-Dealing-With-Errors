@@ -32,6 +32,7 @@ class ProgrammerController extends APIBaseController {
     Request $request,
     UserRepository $userRepository
   ){
+	  throw new \Exception();
     $programmer = new Programmer();
     $form = $this->createForm(ProgrammerType::class, $programmer);
     $this->processForm($request, $form);
