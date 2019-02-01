@@ -19,6 +19,24 @@ class APIExceptionSubscriber implements EventSubscriberInterface {
 		} else {
 			$statusCode = $e instanceof  HttpExceptionInterface ? $e->getStatusCode() : 500;
 			$apiProblem = new ApiProblem($statusCode);
+			
+			if($e instanceof HttpExceptionInterface){
+				if (
+					strpos(
+						$e->getMessage(),
+			'object not found by the @ParamConverter annotation'
+					) !== -1
+				) {
+					$lengthStringToChopFromEnd = -(strlen('object not found by the @ParamConverter annotation')) - 1;
+					$message = substr($e->getMessage(),0, $lengthStringToChopFromEnd);
+					$message = strtolower(substr($message, 11));
+					$message = 'No ' . $message . 'found';
+				} else {
+					$message = $e->getMessage();
+				}
+				
+				$apiProblem->set('detail', $message);
+			}
 		}
 
 		$response =  new JsonResponse(

@@ -177,5 +177,13 @@ EOF;
 			'title',
 			'Not Found'
 		);
+		
+		$this->asserter()->assertResponsePropertyEquals(
+				$response,
+				'detail',
+				'No programmer found'
+		);
+		
+		
 	}
 }
